@@ -2,8 +2,8 @@
 from nwb_conversion_tools import BaseDataInterface
 
 
-class MyEcephysBehaviorInterface(BaseRecordingExtractorInterface):
-    """My behavior interface specific to the ecephys experiments."""
+class 2022Embargo01BehaviorInterface(BaseRecordingExtractorInterface):
+    """My behavior interface docstring"""
 
     def __init__(self):
         # Point to data

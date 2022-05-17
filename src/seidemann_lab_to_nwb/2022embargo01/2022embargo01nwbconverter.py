@@ -6,15 +6,15 @@ from nwb_conversion_tools import (
     PhySortingInterface,
 )
 
-from my_lab_to_nwb.my_ecephys_dataset import MyEcephysBehaviorInterface
+from seidemann_lab_to_nwb.2022embargo01 import 2022Embargo01BehaviorInterface
 
 
-class MyEcephysDatasetNWBConverter(NWBConverter):
+class 2022Embargo01NWBConverter(NWBConverter):
     """Primary conversion class for my extracellular electrophysiology dataset."""
 
     data_interface_classes = dict(
         Recording=SpikeGLXRecordingInterface,
         LFP=SpikeGLXLFPInterface,
         Sorting=PhySortingInterface,
-        Behavior=MyEcephysBehaviorInterface,
+        Behavior=2022Embargo01BehaviorInterface,
     )
