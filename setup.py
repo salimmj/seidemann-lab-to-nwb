@@ -10,14 +10,16 @@ with open("README.md", "r") as f:
     long_description = f.read()
 
 setup(
-    name="my_lab_to_nwb",
+    name="seidemann-lab-to-nwb",
     version="0.0.1",
     description="NWB conversion scripts, functions, and classes for an arbitrary conversion project.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    author="Cody Baker and Ben Dichter.",
+    author="CatalystNeuro",
     email="ben.dichter@catalystneuro.com",
-    packages=find_packages(),
+    url = "https://github.com/catalystneuro/seidemann-lab-to-nwb",
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
     include_package_data=True,
     python_requires=">=3.7",
     install_requires=install_requires,
