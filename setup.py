@@ -10,7 +10,7 @@ with open("README.md", "r") as f:
     long_description = f.read()
 
 setup(
-    name="seidemann-lab-to-nwb",
+    name="seidemann_lab_to_nwb",
     version="0.0.1",
     description="NWB conversion scripts, functions, and classes for an arbitrary conversion project.",
     long_description=long_description,
