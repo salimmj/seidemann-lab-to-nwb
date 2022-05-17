@@ -30,4 +30,4 @@ conda create name_of_environment_file.yml
 conda activate name-of-environment
 ```
 
-Of course, if the conversion is sufficiently simple feel free to keep dependencies at the outermost level.
+Of course, if the conversion is sufficiently simple feel free to keep dependencies at the outermost level
