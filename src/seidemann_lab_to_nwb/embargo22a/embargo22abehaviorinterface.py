@@ -2,7 +2,7 @@
 from nwb_conversion_tools import BaseDataInterface
 
 
-class 2022Embargo01BehaviorInterface(BaseRecordingExtractorInterface):
+class Embargo22ABehaviorInterface(BaseRecordingExtractorInterface):
     """My behavior interface docstring"""
 
     def __init__(self):
