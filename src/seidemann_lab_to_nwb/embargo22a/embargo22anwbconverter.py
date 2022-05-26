@@ -1,8 +1,5 @@
 """Primary NWBConverter class for this dataset."""
-from nwb_conversion_tools import (
-    NWBConverter,
-    Suite2pSegmentationInterface
-)
+from nwb_conversion_tools import NWBConverter, Suite2pSegmentationInterface
 
 from seidemann_lab_to_nwb.embargo22a import Embargo22ABehaviorInterface
 

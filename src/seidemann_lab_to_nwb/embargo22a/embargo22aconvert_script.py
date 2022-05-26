@@ -15,7 +15,7 @@ if stub_test:
     output_path = output_path.parent / "nwb_stub"
 spikeextractors_backend = False
 
-session_id = data_path.stem 
+session_id = data_path.stem
 
 source_data = dict()
 conversion_options = dict()

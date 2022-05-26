@@ -1,0 +1,12 @@
+NWBFile:
+  related_publications: 
+    TBD
+  session_description: 
+    TBD
+  institution: My Institution
+  lab: Seidemann
+  experimenter:
+    - Last, First Middle
+    - Last, First Middle
+Subject:
+  species: Rattus norvegicus
