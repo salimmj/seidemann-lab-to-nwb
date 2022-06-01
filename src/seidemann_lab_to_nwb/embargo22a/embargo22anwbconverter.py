@@ -2,12 +2,13 @@
 from nwb_conversion_tools import NWBConverter, Suite2pSegmentationInterface
 
 from seidemann_lab_to_nwb.embargo22a import Embargo22ABehaviorInterface
-
+from numpymemmapimaginginterface import NumpyMemmapImagingInterface
 
 class Embargo22ANWBConverter(NWBConverter):
     """Primary conversion class for my extracellular electrophysiology dataset."""
 
     data_interface_classes = dict(
+        Imaging=NumpyMemmapImagingInterface,
         Suit2P=Suite2pSegmentationInterface,
         Behavior=Embargo22ABehaviorInterface,
     )
