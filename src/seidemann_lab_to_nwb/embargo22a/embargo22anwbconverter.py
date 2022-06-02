@@ -42,5 +42,4 @@ class Embargo22ANWBConverter(NWBConverter):
 
         metadata["NWBFile"].update(session_start_time=session_start_time)
 
-
         return metadata
