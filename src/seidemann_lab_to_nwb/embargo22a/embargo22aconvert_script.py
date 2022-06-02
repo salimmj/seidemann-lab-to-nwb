@@ -57,15 +57,8 @@ metadata_path = Path(__file__).parent / "embargo22a_metadata.yml"
 metadata_from_yaml = load_dict_from_file(metadata_path)
 metadata = dict_deep_update(metadata, metadata_from_yaml)
 
-# Temporary
-session_start_time = datetime(2020, 1, 1, 12, 30, 0, tzinfo=tz.gettz("US/Pacific")).isoformat()
-metadata["NWBFile"].update(session_start_time=session_start_time)
-
 nwb_file_name = f"{session_id}.nwb"
 nwbfile_path = output_path / nwb_file_name
 converter.run_conversion(
-    nwbfile_path=str(nwbfile_path),
-    metadata=metadata,
-    conversion_options=conversion_options,
-    overwrite=True,
+    nwbfile_path=str(nwbfile_path), metadata=metadata, conversion_options=conversion_options, overwrite=True,
 )
