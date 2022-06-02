@@ -43,7 +43,7 @@ class NumpyMemmapImagingInterface(BaseImagingExtractorInterface):
             dtype=dtype,
             offset=offset,
         )
-        
+
         self.verbose = True
         self.source_data = dict(
             file_path=file_path,
@@ -58,4 +58,3 @@ class NumpyMemmapImagingInterface(BaseImagingExtractorInterface):
             num_channels_axis=num_channels_axis,
             offset=offset,
         )
-
