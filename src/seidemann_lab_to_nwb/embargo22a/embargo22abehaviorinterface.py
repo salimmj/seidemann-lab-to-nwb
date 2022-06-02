@@ -111,6 +111,8 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         # Add the trials table
         rows_as_dicts = df_trial_data.T.to_dict().values()
         [nwbfile.add_trial(**row_dict) for row_dict in rows_as_dicts]
+        
+        
 
     def add_events(self, nwbfile, trial_structure):
 

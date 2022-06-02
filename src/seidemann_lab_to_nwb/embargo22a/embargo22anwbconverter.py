@@ -27,6 +27,7 @@ class Embargo22ANWBConverter(NWBConverter):
     def get_metadata(self):
         metadata = super().get_metadata()
 
+        # Only the more complicated file has the datetime
         file_path = self.session_path / "M22D20210127R0Data2P20201001.mat"
 
         data_simple = read_mat(
