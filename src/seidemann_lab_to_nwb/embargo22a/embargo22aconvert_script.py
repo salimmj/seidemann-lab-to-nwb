@@ -60,5 +60,8 @@ metadata = dict_deep_update(metadata, metadata_from_yaml)
 nwb_file_name = f"{session_id}.nwb"
 nwbfile_path = output_path / nwb_file_name
 converter.run_conversion(
-    nwbfile_path=str(nwbfile_path), metadata=metadata, conversion_options=conversion_options, overwrite=True,
+    nwbfile_path=str(nwbfile_path),
+    metadata=metadata,
+    conversion_options=conversion_options,
+    overwrite=True,
 )
