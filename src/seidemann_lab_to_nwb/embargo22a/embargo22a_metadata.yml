@@ -9,4 +9,8 @@ NWBFile:
     - Last, First Middle
     - Last, First Middle
 Subject:
-  species: Rattus norvegicus
+  subject_id: Loki
+  species: Macaca mulatta
+  age: P11Y
+  weight: 10.9
+
