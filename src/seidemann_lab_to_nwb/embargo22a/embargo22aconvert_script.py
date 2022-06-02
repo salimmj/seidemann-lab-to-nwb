@@ -38,7 +38,7 @@ imaging_parameters = dict(
     sampling_frequency=sampling_frequency,
     dtype=dtype,
 )
-source_data.update(Imaging=imaging_parameters)
+# source_data.update(Imaging=imaging_parameters)
 
 # Suite2P
 plane_no = 0
@@ -46,8 +46,8 @@ folder_path = data_path / "stream" / "suite2p"
 source_data.update(Suit2P=dict(file_path=str(folder_path), plane_no=plane_no))
 
 # Behavior
-# session_path = data_path / "stream"
-# source_data.update(Behavior=dict(session_path=str(session_path)))
+session_path = data_path / "stream"
+source_data.update(Behavior=dict(session_path=str(session_path)))
 
 converter = Embargo22ANWBConverter(source_data=source_data)
 
