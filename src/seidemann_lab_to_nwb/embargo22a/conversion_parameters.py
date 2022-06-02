@@ -15,6 +15,5 @@ video_dict = dict(
     frame_axis=frame_axis,
     num_channels_axis=num_channels_axis,
     rows_axis=rows_axis,
-    columns_axis=columns_axis
+    columns_axis=columns_axis,
 )
-

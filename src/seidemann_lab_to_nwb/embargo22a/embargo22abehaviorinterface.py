@@ -18,7 +18,7 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
     def __init__(self, session_path: FolderPathType):
         super().__init__(session_path=session_path)
         self.session_path = Path(self.source_data["session_path"])
-        
+
     def get_metadata(self):
         # Automatically retrieve as much metadata as possible
 
@@ -99,14 +99,15 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
 
         # Re-name for complying with `add_trial` function.
         df_trial_data.rename(
-            columns={"TimeTrialStart": "start_time", "TimeTrialEnd": "stop_time"}, inplace=True,
+            columns={"TimeTrialStart": "start_time", "TimeTrialEnd": "stop_time"},
+            inplace=True,
         )
 
         columns_to_add = [column for column in all_columns if column not in ["TimeTrialStart", "TimeTrialEnd"]]
 
         for column in columns_to_add:
             nwbfile.add_trial_column(name=column, description=column)  # To-do add column description
-        
+
         # Add the trials table
         rows_as_dicts = df_trial_data.T.to_dict().values()
         [nwbfile.add_trial(**row_dict) for row_dict in rows_as_dicts]
