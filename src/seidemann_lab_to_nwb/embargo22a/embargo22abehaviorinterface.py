@@ -171,7 +171,7 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         time_columns = [column for column in df_trial_data.columns if "Time" in column and "Now" not in column]
         for column in time_columns:
             df_trial_data[column] = df_trial_data[column] / 1e
-        
+
         # Re-name for complying with `add_trial` function.
         df_trial_data.rename(
             columns={"TimeTrialStart": "start_time", "TimeTrialEnd": "stop_time"},
