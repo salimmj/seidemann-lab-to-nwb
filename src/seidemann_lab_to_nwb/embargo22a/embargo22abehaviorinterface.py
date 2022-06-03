@@ -99,7 +99,7 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
 
         LFP_data = np.concatenate([row["LFP"] for row in df_trial_data["Database"]])
         electrical_series = ElectricalSeries(
-            name="ElectricalSeries_lfp",
+            name="ElectricalSeriesLFP",
             data=H5DataIO(LFP_data, compression="gzip"),
             electrodes=electrode_table_region,
             timestamps=timestamps,
@@ -121,7 +121,7 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         # Photo-Diodes
         photodiode_data = np.concatenate([row["Photodiode"] for row in df_trial_data["Database"]])
         photodiode_unit = "V"  # To ask authors
-        name = "Photodiode time series"
+        name = "TimeSeriesPhotodiode"
         photodiode_time_series = TimeSeries(
             name=name, data=H5DataIO(photodiode_data, compression="gzip"), unit=photodiode_unit, timestamps=timestamps
         )
@@ -197,7 +197,10 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
             },
         )
 
-        columns_to_add = [column for column in df_trial_data.columns if column not in ["start_time", "stop_time"]]
+        basic_columns = ["start_time", "stop_time"]
+        # Add the basic values to the trials table
+        rows_as_dicts = df_trial_data[basic_columns].T.to_dict().values()
+        [nwbfile.add_trial(**row_dict) for row_dict in rows_as_dicts]
 
         # Add extra columns
         trial_columns_descriptions = {
@@ -214,14 +217,10 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
             "condition_type": "Experimental condition (visual stimulus vs blank)",
         }
 
-        # To snake_case
-
-        for column in columns_to_add:
-            nwbfile.add_trial_column(name=column, description=trial_columns_descriptions[column])
-
-        # Add the trials table
-        rows_as_dicts = df_trial_data.T.to_dict().values()
-        [nwbfile.add_trial(**row_dict) for row_dict in rows_as_dicts]
+        for column, description in trial_columns_descriptions.items():
+            data = df_trial_data[column].to_list()
+            data = H5DataIO(data, compression="gzip")
+            nwbfile.add_trial_column(name=column, data=data, description=description)
 
     def add_events(self, nwbfile, trial_structure):
 
@@ -240,7 +239,8 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
 
         # For this conversion the types of events are the following
         # ["type_eye_state", "type_protocol_state", "type_new_trial", "type_oi_state", "type_reward_state"]
-        event_type_array = df_events.event_type.unique()
+        event_type_array = list(df_events.event_type.unique())
+        event_type_array.remove("type_new_trial")  # Redundant information
         behavior_module = get_module(nwbfile, "behavior")  # Not clear yet if all those types should go into behavior
 
         for event_type in event_type_array:
