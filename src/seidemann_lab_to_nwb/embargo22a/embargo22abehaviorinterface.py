@@ -45,24 +45,35 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         timestamps = np.concatenate([row["Timestamp"] for row in df_trial_data["Database"]])
 
         # Eye tracking
+        # [x,y,pupil size]
         eye_tracking_data = np.concatenate([row["Eyes"] for row in df_trial_data["Database"]])
-        name = "Eye tracking"
-        spatial_series = SpatialSeries(
-            name=name,
-            description="Eye tracking ",
-            data=H5DataIO(eye_tracking_data, compression="gzip"),
+        spatial_series_eyes = SpatialSeries(
+            name="pupil position",
+            description="(x, y)",
+            data=H5DataIO(eye_tracking_data[:, [0, 1]], compression="gzip"),
             reference_frame="unknown",
             unit="unknown",
             timestamps=timestamps,
         )
-        eye_tracking_object = EyeTracking(spatial_series=spatial_series, name=name)
+        
+        spatial_series_pupil_size = SpatialSeries(
+            name="pupil size",
+            description="the size of the pupils.",
+            data=H5DataIO(eye_tracking_data[:, 2], compression="gzip"),
+            reference_frame="unknown",
+            unit="unknown",
+            timestamps=timestamps,
+        )
+        
+        name = "Eye Tracking"
+        eye_tracking_object = EyeTracking(spatial_series=[spatial_series_eyes, spatial_series_pupil_size], name=name)
 
         behavior_module = get_module(nwbfile, "behavior")  # Not clear yet if all those types should go into behavior
         behavior_module.add(eye_tracking_object)
 
         # LFP
         name = "LFP"
-        location = "uknown"
+        location = "Left visual cortex"
 
         lfp_device = "LFP device"  # To find out
         lfp_device_description = "TBD"
@@ -161,16 +172,16 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         df_trial_data["condition_type"] = [
             current_condition_to_description[CurrCond] for CurrCond in df_trial_data["CurrCond"]
         ]
+        
+        # Drop redundant columns
         df_trial_data.drop(
-            columns=["OIStimID", "CurrCond"], inplace=True
-        )  # Drop as they are described in condition_type textually.
-        df_trial_data.drop(columns=["TimeNow"], inplace=True)  # Drop as this is information contained in the timestamps
-        df_trial_data.drop(columns=["Outcome"], inplace=True)
-
+            columns=["OIStimID", "CurrCond", "TimeNow", "Outcome"], inplace=True
+        )
+        
         # Time in seconds
         time_columns = [column for column in df_trial_data.columns if "Time" in column and "Now" not in column]
         for column in time_columns:
-            df_trial_data[column] = df_trial_data[column] / 1e
+            df_trial_data[column] = df_trial_data[column] / 1e3
 
         # Re-name for complying with `add_trial` function.
         df_trial_data.rename(
@@ -178,7 +189,7 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
             inplace=True,
         )
 
-        columns_to_add = [column for column in all_columns if column not in ["TimeTrialStart", "TimeTrialEnd"]]
+        columns_to_add = [column for column in df_trial_data.columns if column not in ["start_time", "stop_time"]]
 
         # Add extra columns
         trial_columns_descriptions = {
