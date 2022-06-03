@@ -157,15 +157,15 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         df_trial_data = df_trial_data.drop(columns=single_value_columns)
 
         # Add information to trial data
-        df_trial_data["Outcome"] = [number_to_outcome_map[outcome].lower() for outcome in df_trial_data["Outcome"]]
-        df_trial_data["condition type"] = [
+        df_trial_data["outcome"] = [number_to_outcome_map[outcome].lower() for outcome in df_trial_data["Outcome"]]
+        df_trial_data["condition_type"] = [
             current_condition_to_description[CurrCond] for CurrCond in df_trial_data["CurrCond"]
         ]
-
         df_trial_data.drop(
             columns=["OIStimID", "CurrCond"], inplace=True
         )  # Drop as they are described in condition_type textually.
         df_trial_data.drop(columns=["TimeNow"], inplace=True)  # Drop as this is information contained in the timestamps
+        df_trial_data.drop(columns=["Outcome"], inplace=True)
 
         # Time in seconds
         time_columns = [column for column in df_trial_data.columns if "Time" in column and "Now" not in column]
@@ -188,14 +188,30 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
 
         # Re-name for complying with `add_trial` function.
         df_trial_data.rename(
-            columns={"TimeTrialStart": "start_time", "TimeTrialEnd": "stop_time"},
-            inplace=True,
+            columns={"TimeTrialStart": "start_time", "TimeTrialEnd": "stop_time"}, inplace=True,
         )
 
         columns_to_add = [column for column in all_columns if column not in ["TimeTrialStart", "TimeTrialEnd"]]
 
+        # Add extra columns
+        trial_columns_descriptions = {
+            "TimeOITrigger": "time to triger imaging system",
+            "TimeOILSStart": "time to turn on light shutter",
+            "TimeOILSEnd": "time to turn off light shutter",
+            "TimeStimStart": "starting time for the stimuli",
+            "TimeStimEnd": "ending time for the stimuli",
+            "TimeDBTrigger": "TBD",
+            "TimeFPStart": "TBD",
+            "TimeFixHoldStart": "TBD",
+            "TimeFixHoldEnd": "TBD",
+            "outcome": "description of trial  outcome ['break_fix', 'success', 'break_fix_late']",
+            "condition_type": "Experimental condition (visual stimulus vs blank)",
+        }
+
         for column in columns_to_add:
-            nwbfile.add_trial_column(name=column, description=column)  # To-do add column description
+            nwbfile.add_trial_column(
+                name=column, description=trial_columns_descriptions[column]
+            )  # To-do add column description
 
         # Add the trials table
         rows_as_dicts = df_trial_data.T.to_dict().values()
