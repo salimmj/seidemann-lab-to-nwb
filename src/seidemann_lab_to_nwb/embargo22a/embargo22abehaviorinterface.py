@@ -188,7 +188,8 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
 
         # Re-name for complying with `add_trial` function.
         df_trial_data.rename(
-            columns={"TimeTrialStart": "start_time", "TimeTrialEnd": "stop_time"}, inplace=True,
+            columns={"TimeTrialStart": "start_time", "TimeTrialEnd": "stop_time"},
+            inplace=True,
         )
 
         columns_to_add = [column for column in all_columns if column not in ["TimeTrialStart", "TimeTrialEnd"]]
