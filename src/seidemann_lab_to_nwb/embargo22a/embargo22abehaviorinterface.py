@@ -55,7 +55,7 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
             unit="unknown",
             timestamps=timestamps,
         )
-        
+
         spatial_series_pupil_size = SpatialSeries(
             name="pupil size",
             description="the size of the pupils.",
@@ -64,7 +64,7 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
             unit="unknown",
             timestamps=timestamps,
         )
-        
+
         name = "Eye Tracking"
         eye_tracking_object = EyeTracking(spatial_series=[spatial_series_eyes, spatial_series_pupil_size], name=name)
 
@@ -172,12 +172,10 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         df_trial_data["condition_type"] = [
             current_condition_to_description[CurrCond] for CurrCond in df_trial_data["CurrCond"]
         ]
-        
+
         # Drop redundant columns
-        df_trial_data.drop(
-            columns=["OIStimID", "CurrCond", "TimeNow", "Outcome"], inplace=True
-        )
-        
+        df_trial_data.drop(columns=["OIStimID", "CurrCond", "TimeNow", "Outcome"], inplace=True)
+
         # Time in seconds
         time_columns = [column for column in df_trial_data.columns if "Time" in column and "Now" not in column]
         for column in time_columns:
@@ -207,9 +205,7 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         }
 
         for column in columns_to_add:
-            nwbfile.add_trial_column(
-                name=column, description=trial_columns_descriptions[column]
-            )
+            nwbfile.add_trial_column(name=column, description=trial_columns_descriptions[column])
 
         # Add the trials table
         rows_as_dicts = df_trial_data.T.to_dict().values()
