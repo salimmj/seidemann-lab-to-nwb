@@ -115,9 +115,8 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         photodiode_time_series = TimeSeries(
             name=name, data=H5DataIO(photodiode_data, compression="gzip"), unit=photodiode_unit, timestamps=timestamps
         )
-        
-        nwbfile.add_acquisition(photodiode_time_series)  # Not clear were this should
 
+        nwbfile.add_acquisition(photodiode_time_series)  # Not clear were this should
 
     def add_trials(self, nwbfile, trial_structure):
 
@@ -189,7 +188,8 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
 
         # Re-name for complying with `add_trial` function.
         df_trial_data.rename(
-            columns={"TimeTrialStart": "start_time", "TimeTrialEnd": "stop_time"}, inplace=True,
+            columns={"TimeTrialStart": "start_time", "TimeTrialEnd": "stop_time"},
+            inplace=True,
         )
 
         columns_to_add = [column for column in all_columns if column not in ["TimeTrialStart", "TimeTrialEnd"]]
