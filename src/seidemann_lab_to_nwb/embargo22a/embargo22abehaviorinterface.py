@@ -48,7 +48,7 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         # [x,y,pupil size]
         eye_tracking_data = np.concatenate([row["Eyes"] for row in df_trial_data["Database"]])
         spatial_series_eyes = SpatialSeries(
-            name="pupil position",
+            name="pupil_position",
             description="(x, y)",
             data=H5DataIO(eye_tracking_data[:, [0, 1]], compression="gzip"),
             reference_frame="unknown",
@@ -57,7 +57,7 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         )
 
         spatial_series_pupil_size = SpatialSeries(
-            name="pupil size",
+            name="pupil_size",
             description="the size of the pupils.",
             data=H5DataIO(eye_tracking_data[:, 2], compression="gzip"),
             reference_frame="unknown",
@@ -65,7 +65,7 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
             timestamps=timestamps,
         )
 
-        name = "Eye Tracking"
+        name = "EyeTracking"
         eye_tracking_object = EyeTracking(spatial_series=[spatial_series_eyes, spatial_series_pupil_size], name=name)
 
         behavior_module = get_module(nwbfile, "behavior")  # Not clear yet if all those types should go into behavior
@@ -75,13 +75,13 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         name = "LFP"
         location = "Left visual cortex"
 
-        lfp_device = "LFP device"  # To find out
+        lfp_device = "LFP_device"  # To find out
         lfp_device_description = "TBD"
         lfp_manufacturer = "TBD"
         device = Device(name=lfp_device, description=lfp_device_description, manufacturer=lfp_manufacturer)
         nwbfile.add_device(devices=[device])
 
-        lfp_electrode_group_name = "LFP electrodes"
+        lfp_electrode_group_name = "LFP_electrodes"
         lfp_electrode_group = ElectrodeGroup(
             name=lfp_electrode_group_name, description="LFP Electrodes", location=location, device=device
         )
@@ -99,13 +99,13 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
 
         LFP_data = np.concatenate([row["LFP"] for row in df_trial_data["Database"]])
         electrical_series = ElectricalSeries(
-            name=name,
+            name="ElectricalSeries_lfp",
             data=H5DataIO(LFP_data, compression="gzip"),
             electrodes=electrode_table_region,
             timestamps=timestamps,
         )
 
-        LFP_object = LFP(electrical_series=electrical_series, name=name)
+        LFP_object = LFP(electrical_series=electrical_series, name="LFP")
         nwbfile.add_acquisition(LFP_object)
 
         # EKG
@@ -119,7 +119,6 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         nwbfile.add_acquisition(ekg_time_series)
 
         # Photo-Diodes
-
         photodiode_data = np.concatenate([row["Photodiode"] for row in df_trial_data["Database"]])
         photodiode_unit = "V"  # To ask authors
         name = "Photodiode time series"
@@ -181,28 +180,41 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         for column in time_columns:
             df_trial_data[column] = df_trial_data[column] / 1e3
 
-        # Re-name for complying with `add_trial` function.
-        df_trial_data.rename(
-            columns={"TimeTrialStart": "start_time", "TimeTrialEnd": "stop_time"},
-            inplace=True,
+        # Re-name for complying with `add_trial` function and snake_case convention
+        df_trial_data = df_trial_data.rename(
+            columns={
+                "TimeTrialStart": "start_time",
+                "TimeTrialEnd": "stop_time",
+                "TimeOILSStart": "oils_start_time",
+                "TimeOITrigger": "oi_trigger_time",
+                "TimeOILSEnd": "oils_end_time",
+                "TimeStimStart": "stim_start_time",
+                "TimeStimEnd": "stim_end_time",
+                "TimeDBTrigger": "dbt_trigger_time",
+                "TimeFPStart": "fps_start_time",
+                "TimeFixHoldStart": "fix_hold_start_time",
+                "TimeFixHoldEnd": "fix_hold_end_time",
+            },
         )
 
         columns_to_add = [column for column in df_trial_data.columns if column not in ["start_time", "stop_time"]]
 
         # Add extra columns
         trial_columns_descriptions = {
-            "TimeOITrigger": "time to triger imaging system",
-            "TimeOILSStart": "time to turn on light shutter",
-            "TimeOILSEnd": "time to turn off light shutter",
-            "TimeStimStart": "starting time for the stimuli",
-            "TimeStimEnd": "ending time for the stimuli",
-            "TimeDBTrigger": "TBD",
-            "TimeFPStart": "TBD",
-            "TimeFixHoldStart": "TBD",
-            "TimeFixHoldEnd": "TBD",
+            "oi_trigger_time": "time to triger imaging system",
+            "oils_start_time": "time to turn on light shutter",
+            "oils_end_time": "time to turn off light shutter",
+            "stim_start_time": "starting time for the stimuli",
+            "stim_end_time": "ending time for the stimuli",
+            "dbt_trigger_time": "TBD",
+            "fps_start_time": "TBD",
+            "fix_hold_start_time": "TBD",
+            "fix_hold_end_time": "TBD",
             "outcome": "description of trial  outcome ['break_fix', 'success', 'break_fix_late']",
             "condition_type": "Experimental condition (visual stimulus vs blank)",
         }
+
+        # To snake_case
 
         for column in columns_to_add:
             nwbfile.add_trial_column(name=column, description=trial_columns_descriptions[column])
