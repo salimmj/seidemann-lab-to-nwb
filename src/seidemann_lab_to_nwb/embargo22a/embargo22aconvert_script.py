@@ -38,7 +38,7 @@ imaging_parameters = dict(
     sampling_frequency=sampling_frequency,
     dtype=dtype,
 )
-# source_data.update(Imaging=imaging_parameters)
+source_data.update(Imaging=imaging_parameters)
 
 # Suite2P
 plane_no = 0
