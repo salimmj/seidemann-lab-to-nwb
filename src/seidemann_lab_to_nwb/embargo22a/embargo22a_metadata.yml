@@ -8,6 +8,13 @@ NWBFile:
   experimenter:
     - Last, First Middle
     - Last, First Middle
+  experiment_description:
+    TBD
+  keywords:
+    - Ophys
+    - macaque
+    - Fixation
+    - Gabor
 Subject:
   subject_id: Loki
   species: Macaca mulatta
