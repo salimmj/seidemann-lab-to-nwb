@@ -170,22 +170,8 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         # Time in seconds
         time_columns = [column for column in df_trial_data.columns if "Time" in column and "Now" not in column]
         for column in time_columns:
-            df_trial_data[column] = df_trial_data[column] / 1000.0
-
-        # Order them by average distance from trial start
-        df_aligned = df_trial_data[time_columns].sub(df_trial_data.TimeTrialStart, axis=0)
-        ordered_time_columns = df_aligned.mean(axis=0).sort_values().index.to_list()
-
-        # Order the rest alphabetically
-        all_columns = set(df_trial_data.columns.values)
-        non_time_columns = all_columns.difference(set(time_columns))
-        all_columns = set(df_trial_data.columns.values)
-        non_time_columns = list(all_columns.difference(set(time_columns)))
-        non_time_columns.sort()
-        ordered_columns = ordered_time_columns + non_time_columns
-
-        df_trial_data = df_trial_data[ordered_columns]
-
+            df_trial_data[column] = df_trial_data[column] / 1e
+        
         # Re-name for complying with `add_trial` function.
         df_trial_data.rename(
             columns={"TimeTrialStart": "start_time", "TimeTrialEnd": "stop_time"},
@@ -212,7 +198,7 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         for column in columns_to_add:
             nwbfile.add_trial_column(
                 name=column, description=trial_columns_descriptions[column]
-            )  # To-do add column description
+            )
 
         # Add the trials table
         rows_as_dicts = df_trial_data.T.to_dict().values()
