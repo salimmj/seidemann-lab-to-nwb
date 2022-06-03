@@ -23,7 +23,7 @@ source_data = dict()
 conversion_options = dict()
 
 # Imaging
-sampling_frequency = 1.0
+sampling_frequency = 30.0
 dtype = "uint16"
 file_path = data_path / "stream" / "Image_001_001.raw"
 imaging_parameters = dict(
