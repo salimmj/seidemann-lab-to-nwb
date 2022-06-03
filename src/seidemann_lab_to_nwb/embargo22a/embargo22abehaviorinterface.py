@@ -77,10 +77,11 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         df_trial_data["condition type"] = [
             current_condition_to_description[CurrCond] for CurrCond in df_trial_data["CurrCond"]
         ]
-        
-        df_trial_data.drop(columns=["OIStimID", "CurrCond"], inplace=True)  # Drop as they are described in condition_type textually.
-        df_trial_data.drop(columns=["TimeNow"], inplace=True)  # Drop as this is information contained in the timestamps
 
+        df_trial_data.drop(
+            columns=["OIStimID", "CurrCond"], inplace=True
+        )  # Drop as they are described in condition_type textually.
+        df_trial_data.drop(columns=["TimeNow"], inplace=True)  # Drop as this is information contained in the timestamps
 
         # Time in seconds
         time_columns = [column for column in df_trial_data.columns if "Time" in column and "Now" not in column]
