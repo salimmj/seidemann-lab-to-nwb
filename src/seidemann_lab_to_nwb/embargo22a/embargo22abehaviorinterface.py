@@ -243,6 +243,19 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         event_type_array.remove("type_new_trial")  # Redundant information
         behavior_module = get_module(nwbfile, "behavior")  # Not clear yet if all those types should go into behavior
 
+        event_descriptions_map = {
+            "type_eye_state": "state of the eye tracking fixation, undefined, lost, etc.",
+            "type_protocol_state": "protocol switch event registry",
+            "type_oi_state": "optical imaging event registry",
+            "type_reward_state": "reward event",
+        }
+        event_name_map = {
+            "type_eye_state": "eye_tracking_events",
+            "type_protocol_state": "protocol_events",
+            "type_oi_state": "optical_imaging_events",
+            "type_reward_state": "reward_events",
+        }
+        
         for event_type in event_type_array:
             df_event_type = df_events.query(f"event_type=='{event_type}'")
             timestamps = df_event_type.timestamps.to_numpy()
@@ -252,8 +265,8 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
             data = [label_to_postion[label] for label in df_event_type.event]
 
             events = LabeledEvents(
-                name=event_type,
-                description=event_type,  # Look for descriptions
+                name=event_name_map[event_type],
+                description=event_descriptions_map[event_type],  # Look for descriptions
                 timestamps=timestamps,
                 data=data,
                 labels=labels,
