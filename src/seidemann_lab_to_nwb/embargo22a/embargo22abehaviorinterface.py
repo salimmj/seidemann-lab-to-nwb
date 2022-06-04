@@ -255,7 +255,7 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
             "type_oi_state": "optical_imaging_events",
             "type_reward_state": "reward_events",
         }
-        
+
         for event_type in event_type_array:
             df_event_type = df_events.query(f"event_type=='{event_type}'")
             timestamps = df_event_type.timestamps.to_numpy()
