@@ -25,6 +25,7 @@ Ophys:
       description: The laser is InSight X3 by Spectra Physics. The dichroic mirror is 560nm long-pass.
       location: left V1
       excitation_lambda: 940.0
+      device: Bergamo II XYZR G|R
       optical_channel:
         - name: OpticalChannel
           emission_lambda: 500.0
