@@ -17,7 +17,9 @@ class Embargo22ANWBConverter(NWBConverter):
     """Primary conversion class for my extracellular electrophysiology dataset."""
 
     data_interface_classes = dict(
-        Imaging=NumpyMemmapImagingInterface, Suit2P=Suite2pSegmentationInterface, Behavior=Embargo22ABehaviorInterface,
+        Imaging=NumpyMemmapImagingInterface,
+        Suit2P=Suite2pSegmentationInterface,
+        Behavior=Embargo22ABehaviorInterface,
     )
 
     def __init__(self, source_data: dict):

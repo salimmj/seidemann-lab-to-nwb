@@ -44,7 +44,7 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         smallest_timestamp = df_trial_data.TimeTrialStart.min() / 1e3
         timestamps = np.concatenate([row["Timestamp"] for row in df_trial_data["Database"]])
         timestamps -= smallest_timestamp
-    
+
         # Eye tracking
         # [x,y,pupil size]
         eye_tracking_data = np.concatenate([row["Eyes"] for row in df_trial_data["Database"]])
@@ -71,7 +71,7 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
 
         behavior_module = get_module(nwbfile, "behavior")
         behavior_module.add(eye_tracking_object)
-        
+
         # Photo-Diodes
         photodiode_data = np.concatenate([row["Photodiode"] for row in df_trial_data["Database"]])
         photodiode_unit = "arbitrary"  # To ask authors
@@ -182,7 +182,7 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         smallest_timestamp = df_trial_data.TimeTrialStart.min()
         df_trial_data[time_columns] = df_trial_data[time_columns] - smallest_timestamp
         df_trial_data[time_columns] = df_trial_data[time_columns] / 1e3
-            
+
         # Re-name for complying with `add_trial` function and snake_case convention
         df_trial_data = df_trial_data.rename(
             columns={
