@@ -1,6 +1,5 @@
 """Primary class defining conversion of experiment-specific behavior."""
 from pathlib import Path
-from sqlite3 import Time
 
 import numpy as np
 import pandas as pd
@@ -42,8 +41,10 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         # Add extra signals
         trial_data = trial_structure["Trial"]
         df_trial_data = pd.DataFrame(trial_data)
+        smallest_timestamp = df_trial_data.TimeTrialStart.min() / 1e3
         timestamps = np.concatenate([row["Timestamp"] for row in df_trial_data["Database"]])
-
+        timestamps -= smallest_timestamp
+    
         # Eye tracking
         # [x,y,pupil size]
         eye_tracking_data = np.concatenate([row["Eyes"] for row in df_trial_data["Database"]])
@@ -52,7 +53,7 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
             description="(x, y)",
             data=H5DataIO(eye_tracking_data[:, [0, 1]], compression="gzip"),
             reference_frame="unknown",
-            unit="unknown",
+            unit="degrees",
             timestamps=timestamps,
         )
 
@@ -61,72 +62,73 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
             description="the size of the pupils.",
             data=H5DataIO(eye_tracking_data[:, 2], compression="gzip"),
             reference_frame="unknown",
-            unit="unknown",
+            unit="arbitrary",
             timestamps=timestamps,
         )
 
         name = "EyeTracking"
         eye_tracking_object = EyeTracking(spatial_series=[spatial_series_eyes, spatial_series_pupil_size], name=name)
 
-        behavior_module = get_module(nwbfile, "behavior")  # Not clear yet if all those types should go into behavior
+        behavior_module = get_module(nwbfile, "behavior")
         behavior_module.add(eye_tracking_object)
-
-        # LFP
-        name = "LFP"
-        location = "Left visual cortex"
-
-        lfp_device = "LFP_device"  # To find out
-        lfp_device_description = "TBD"
-        lfp_manufacturer = "TBD"
-        device = Device(name=lfp_device, description=lfp_device_description, manufacturer=lfp_manufacturer)
-        nwbfile.add_device(devices=[device])
-
-        lfp_electrode_group_name = "LFP_electrodes"
-        lfp_electrode_group = ElectrodeGroup(
-            name=lfp_electrode_group_name, description="LFP Electrodes", location=location, device=device
-        )
-        nwbfile.add_electrode_group(electrode_groups=[lfp_electrode_group])
-
-        nwbfile.add_electrode(
-            x=np.nan, y=np.nan, z=np.nan, imp=-1.0, location=location, filtering="none", group=lfp_electrode_group
-        )
-        nwbfile.add_electrode(
-            x=np.nan, y=np.nan, z=np.nan, imp=-1.0, location=location, filtering="none", group=lfp_electrode_group
-        )
-
-        region = [0, 1]
-        electrode_table_region = nwbfile.create_electrode_table_region(region=region, description="LFP table region")
-
-        LFP_data = np.concatenate([row["LFP"] for row in df_trial_data["Database"]])
-        electrical_series = ElectricalSeries(
-            name="ElectricalSeriesLFP",
-            data=H5DataIO(LFP_data, compression="gzip"),
-            electrodes=electrode_table_region,
-            timestamps=timestamps,
-        )
-
-        LFP_object = LFP(electrical_series=electrical_series, name="LFP")
-        nwbfile.add_acquisition(LFP_object)
-
-        # EKG
-        ekg_unit = "V"  # To ask authors
-        name = "EKG"
-        ekg_data = np.concatenate([row["EKG"] for row in df_trial_data["Database"]])
-
-        ekg_time_series = TimeSeries(
-            name=name, data=H5DataIO(ekg_data, compression="gzip"), unit=ekg_unit, timestamps=timestamps
-        )
-        nwbfile.add_acquisition(ekg_time_series)
-
+        
         # Photo-Diodes
         photodiode_data = np.concatenate([row["Photodiode"] for row in df_trial_data["Database"]])
-        photodiode_unit = "V"  # To ask authors
+        photodiode_unit = "arbitrary"  # To ask authors
         name = "TimeSeriesPhotodiode"
         photodiode_time_series = TimeSeries(
             name=name, data=H5DataIO(photodiode_data, compression="gzip"), unit=photodiode_unit, timestamps=timestamps
         )
 
-        nwbfile.add_acquisition(photodiode_time_series)  # Not clear were this should
+        nwbfile.add_acquisition(photodiode_time_series)
+
+        # LFP AND EKG are junk data for these recordings
+        # LFP
+        # name = "LFP"
+        # location = "Left visual cortex"
+
+        # lfp_device = "LFP_device"  # To find out
+        # lfp_device_description = "TBD"
+        # lfp_manufacturer = "TBD"
+        # device = Device(name=lfp_device, description=lfp_device_description, manufacturer=lfp_manufacturer)
+        # nwbfile.add_device(devices=[device])
+
+        # lfp_electrode_group_name = "LFP_electrodes"
+        # lfp_electrode_group = ElectrodeGroup(
+        #     name=lfp_electrode_group_name, description="LFP Electrodes", location=location, device=device
+        # )
+        # nwbfile.add_electrode_group(electrode_groups=[lfp_electrode_group])
+
+        # nwbfile.add_electrode(
+        #     x=np.nan, y=np.nan, z=np.nan, imp=-1.0, location=location, filtering="none", group=lfp_electrode_group
+        # )
+        # nwbfile.add_electrode(
+        #     x=np.nan, y=np.nan, z=np.nan, imp=-1.0, location=location, filtering="none", group=lfp_electrode_group
+        # )
+
+        # region = [0, 1]
+        # electrode_table_region = nwbfile.create_electrode_table_region(region=region, description="LFP table region")
+
+        # LFP_data = np.concatenate([row["LFP"] for row in df_trial_data["Database"]])
+        # electrical_series = ElectricalSeries(
+        #     name="ElectricalSeriesLFP",
+        #     data=H5DataIO(LFP_data, compression="gzip"),
+        #     electrodes=electrode_table_region,
+        #     timestamps=timestamps,
+        # )
+
+        # LFP_object = LFP(electrical_series=electrical_series, name="LFP")
+        # nwbfile.add_acquisition(LFP_object)
+
+        # # EKG
+        # ekg_unit = "V"  # To ask authors
+        # name = "EKG"
+        # ekg_data = np.concatenate([row["EKG"] for row in df_trial_data["Database"]])
+
+        # ekg_time_series = TimeSeries(
+        #     name=name, data=H5DataIO(ekg_data, compression="gzip"), unit=ekg_unit, timestamps=timestamps
+        # )
+        # nwbfile.add_acquisition(ekg_time_series)
 
     def add_trials(self, nwbfile, trial_structure):
 
@@ -177,9 +179,10 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
 
         # Time in seconds
         time_columns = [column for column in df_trial_data.columns if "Time" in column and "Now" not in column]
-        for column in time_columns:
-            df_trial_data[column] = df_trial_data[column] / 1e3
-
+        smallest_timestamp = df_trial_data.TimeTrialStart.min()
+        df_trial_data[time_columns] = df_trial_data[time_columns] - smallest_timestamp
+        df_trial_data[time_columns] = df_trial_data[time_columns] / 1e3
+            
         # Re-name for complying with `add_trial` function and snake_case convention
         df_trial_data = df_trial_data.rename(
             columns={

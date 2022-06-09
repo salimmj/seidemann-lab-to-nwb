@@ -15,6 +15,20 @@ NWBFile:
     - macaque
     - Fixation
     - Gabor
+Ophys:
+  Device:
+    - name: Bergamo II XYZR G|R
+      description: 2P microscope
+      manufacturer: Thorlabs
+  ImagingPlane:
+    - name: ImagingPlane
+      description: The laser is InSight X3 by Spectra Physics. The dichroic mirror is 560nm long-pass.
+      location: left V1
+      excitation_lambda: 940.0
+      optical_channel:
+        - name: OpticalChannel
+          emission_lambda: 500.0
+          description: no description"
 Subject:
   subject_id: Loki
   species: Macaca mulatta

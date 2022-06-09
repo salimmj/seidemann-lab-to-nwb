@@ -17,9 +17,7 @@ class Embargo22ANWBConverter(NWBConverter):
     """Primary conversion class for my extracellular electrophysiology dataset."""
 
     data_interface_classes = dict(
-        Imaging=NumpyMemmapImagingInterface,
-        Suit2P=Suite2pSegmentationInterface,
-        Behavior=Embargo22ABehaviorInterface,
+        Imaging=NumpyMemmapImagingInterface, Suit2P=Suite2pSegmentationInterface, Behavior=Embargo22ABehaviorInterface,
     )
 
     def __init__(self, source_data: dict):
@@ -40,7 +38,11 @@ class Embargo22ANWBConverter(NWBConverter):
         df_trial_data = pd.DataFrame(trial_data)
 
         df_valid_trials = df_trial_data.query("FlagOIBLK == 1")  # Flag for imaging extraction
-        trial_start_times = df_valid_trials["TimeOITrigger"]
+        trial_start_times = df_valid_trials["TimeOITrigger"] / 1000.0
+
+        # Center with respect to the smallest timestamps in the data
+        smallest_timestamps = df_valid_trials["TimeTrialStart"].min() / 1000.0
+        trial_start_times -= smallest_timestamps
 
         frames_per_trial = 75
         sampling_frequency = 30.0
