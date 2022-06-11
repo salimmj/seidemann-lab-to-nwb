@@ -29,6 +29,10 @@ class Embargo22ANWBConverter(NWBConverter):
 
     def add_time_stamps_to_imaging_extractor(self):
 
+        # Get the smallest timestamp
+        file_path_events = self.session_path / "events.csv"
+        smallest_timestamp = pd.read_csv(file_path_events).Timestamp.min()
+
         file_path = self.session_path / "M22D20210127R0Data2P20201001.mat"
         data_simple = read_mat(
             str(file_path), variable_names=["TS"], ignore_fields=["Events", "nTrial", "FileName", "Sync", "Header"]
@@ -37,29 +41,33 @@ class Embargo22ANWBConverter(NWBConverter):
 
         # Trial data
         trial_data = trial_structure["Trial"]
-        df_trial_data = pd.DataFrame(trial_data)
+        df_valid_trials = pd.DataFrame(trial_data)
+        df_valid_trials = df_valid_trials.query("FlagOIBLK == 1") # Flag indicating imaging extraction
 
-        df_valid_trials = df_trial_data.query("FlagOIBLK == 1")  # Flag for imaging extraction
-        trial_start_times = df_valid_trials["TimeOITrigger"] / 1000.0
-
-        # Center with respect to the smallest timestamps in the data
-        smallest_timestamps = df_valid_trials["TimeTrialStart"].min() / 1000.0
-        trial_start_times -= smallest_timestamps
+        optical_imaging_trigger_time = df_valid_trials["TimeOITrigger"]  # time to triger imaging system
 
         frames_per_trial = 75
         sampling_frequency = 30.0
         sampling_period = 1.0 / sampling_frequency
 
         timestamps = []
-        for start_time in trial_start_times:
+        for start_time in optical_imaging_trigger_time:
             start = start_time
-            stop = sampling_period * frames_per_trial + start_time
+            stop = start + sampling_period * frames_per_trial
             timestamps.append(np.linspace(start=start, stop=stop, num=frames_per_trial))
 
         timestamps = np.concatenate(timestamps)
+        
+        timestamps /= 1e3  # Transform to seconds
+        timestamps -= smallest_timestamp  # Center with respect to the smallest timestamps in the data
+
+        
+        # Add them to imaging extractor
         imaging_interface = self.data_interface_objects["Imaging"]
         imaging_extractor = imaging_interface.imaging_extractor
         imaging_extractor.set_times(times=timestamps)
+        
+        del data_simple
 
     def get_metadata(self):
         metadata = super().get_metadata()

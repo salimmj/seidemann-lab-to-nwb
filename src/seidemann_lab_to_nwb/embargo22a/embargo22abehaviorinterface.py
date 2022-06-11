@@ -4,6 +4,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import scipy.io as sio
+from pymatreader import read_mat
 
 from pynwb import NWBFile, TimeSeries
 from pynwb.device import Device
@@ -21,8 +22,13 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
 
     def __init__(self, session_path: FolderPathType):
         super().__init__(session_path=session_path)
+        
         self.session_path = Path(self.source_data["session_path"])
 
+        # Get the smallest timestamp
+        file_path_events = self.session_path / "events.csv"
+        self.smallest_timestamp = pd.read_csv(file_path_events).Timestamp.min()  # In seconds
+        
     def get_metadata(self):
         # Automatically retrieve as much metadata as possible
 
@@ -30,20 +36,21 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         return empty_metadata
 
     def run_conversion(self, nwbfile: NWBFile, metadata: dict):
-
-        file_path = self.session_path / "M22D20210127R0TS.mat"
-        data_simple = sio.loadmat(str(file_path), simplify_cells=True)
+        
+        file_path = self.session_path / "M22D20210127R0Data2P20201001.mat"
+        data_simple = read_mat(
+            str(file_path), variable_names=["TS"], ignore_fields=["nTrial", "FileName", "Sync"]
+        )
         trial_structure = data_simple["TS"]
 
-        self.add_events(nwbfile, trial_structure)
         self.add_trials(nwbfile, trial_structure)
+        self.add_events(nwbfile, trial_structure)
 
         # Add extra signals
         trial_data = trial_structure["Trial"]
         df_trial_data = pd.DataFrame(trial_data)
-        smallest_timestamp = df_trial_data.TimeTrialStart.min() / 1e3
         timestamps = np.concatenate([row["Timestamp"] for row in df_trial_data["Database"]])
-        timestamps -= smallest_timestamp
+        timestamps -= self.smallest_timestamp 
 
         # Eye tracking
         # [x,y,pupil size]
@@ -179,9 +186,8 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
 
         # Time in seconds
         time_columns = [column for column in df_trial_data.columns if "Time" in column and "Now" not in column]
-        smallest_timestamp = df_trial_data.TimeTrialStart.min()
-        df_trial_data[time_columns] = df_trial_data[time_columns] - smallest_timestamp
-        df_trial_data[time_columns] = df_trial_data[time_columns] / 1e3
+        df_trial_data[time_columns] = df_trial_data[time_columns]  / 1e3
+        df_trial_data[time_columns] = df_trial_data[time_columns] - self.smallest_timestamp
 
         # Re-name for complying with `add_trial` function and snake_case convention
         df_trial_data = df_trial_data.rename(
@@ -262,6 +268,7 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         for event_type in event_type_array:
             df_event_type = df_events.query(f"event_type=='{event_type}'")
             timestamps = df_event_type.timestamps.to_numpy()
+            timestamps -= self.smallest_timestamp
             labels = df_event_type.event.unique()
             labels.sort()
             label_to_postion = {label: position for position, label in enumerate(labels)}
@@ -275,3 +282,5 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
                 labels=labels,
             )
             behavior_module.add(events)
+
+

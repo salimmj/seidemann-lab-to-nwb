@@ -1,21 +1,20 @@
-from pathlib import Path
+from pydantic import FilePath
 from roiextractors import NumpyMemmapImagingExtractor
-from roiextractors.extraction_tools import VideoStructure, DtypeType, PathType
+from roiextractors.extraction_tools import VideoStructure
 
 from nwb_conversion_tools.datainterfaces.ophys.baseimagingextractorinterface import BaseImagingExtractorInterface
-from nwb_conversion_tools.utils.json_schema import get_schema_from_method_signature
-
+from nwb_conversion_tools.utils.types import FilePathType
 
 class NumpyMemmapImagingInterface(BaseImagingExtractorInterface):
-    """Data Interface for TiffImagingExtractor."""
+    """Data Interface for raw imaging data."""
 
     IX = NumpyMemmapImagingExtractor
 
     def __init__(
         self,
-        file_path: PathType,
+        file_path: FilePathType,
         sampling_frequency: float,
-        dtype: DtypeType,
+        dtype: str,
         rows: int,
         columns: int,
         num_channels: int,
