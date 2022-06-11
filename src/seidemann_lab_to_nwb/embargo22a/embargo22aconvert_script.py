@@ -10,12 +10,11 @@ from conversion_parameters import rows, columns, num_channels, rows_axis, column
 
 data_path = Path("/home/heberto/seidemann/loki20210127/")
 output_path = Path("/home/heberto/nwb/")
-stub_test = False
+stub_test =True
 
 
 if stub_test:
     output_path = output_path.parent / "nwb_stub"
-spikeextractors_backend = False
 
 session_id = data_path.stem
 
