@@ -10,7 +10,7 @@ from conversion_parameters import rows, columns, num_channels, rows_axis, column
 
 data_path = Path("/home/heberto/seidemann/loki20210127/")
 output_path = Path("/home/heberto/nwb/")
-stub_test =True
+stub_test = True
 
 
 if stub_test:
