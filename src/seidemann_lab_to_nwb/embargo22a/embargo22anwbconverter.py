@@ -42,7 +42,7 @@ class Embargo22ANWBConverter(NWBConverter):
         # Trial data
         trial_data = trial_structure["Trial"]
         df_valid_trials = pd.DataFrame(trial_data)
-        df_valid_trials = df_valid_trials.query("FlagOIBLK == 1") # Flag indicating imaging extraction
+        df_valid_trials = df_valid_trials.query("FlagOIBLK == 1")  # Flag indicating imaging extraction
 
         optical_imaging_trigger_time = df_valid_trials["TimeOITrigger"]  # time to triger imaging system
 
@@ -57,16 +57,15 @@ class Embargo22ANWBConverter(NWBConverter):
             timestamps.append(np.linspace(start=start, stop=stop, num=frames_per_trial))
 
         timestamps = np.concatenate(timestamps)
-        
+
         timestamps /= 1e3  # Transform to seconds
         timestamps -= smallest_timestamp  # Center with respect to the smallest timestamps in the data
 
-        
         # Add them to imaging extractor
         imaging_interface = self.data_interface_objects["Imaging"]
         imaging_extractor = imaging_interface.imaging_extractor
         imaging_extractor.set_times(times=timestamps)
-        
+
         del data_simple
 
     def get_metadata(self):
