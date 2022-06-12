@@ -26,6 +26,7 @@ Ophys:
       location: left V1
       excitation_lambda: 940.0
       device: Bergamo II XYZR G|R
+      indicator: unknown
       optical_channel:
         - name: OpticalChannel
           emission_lambda: 500.0

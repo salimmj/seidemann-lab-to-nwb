@@ -55,7 +55,7 @@ converter = Embargo22ANWBConverter(source_data=source_data)
 metadata = converter.get_metadata()
 metadata_path = Path(__file__).parent / "embargo22a_metadata.yml"
 metadata_from_yaml = load_dict_from_file(metadata_path)
-metadata = dict_deep_update(metadata, metadata_from_yaml)
+metadata = dict_deep_update(metadata, metadata_from_yaml, append_list=False)
 
 nwb_file_name = f"{session_id}.nwb"
 nwbfile_path = output_path / nwb_file_name
