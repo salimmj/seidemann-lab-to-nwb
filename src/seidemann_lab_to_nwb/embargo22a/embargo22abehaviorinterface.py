@@ -7,7 +7,6 @@ import scipy.io as sio
 from pymatreader import read_mat
 
 from pynwb import NWBFile, TimeSeries
-from pynwb.device import Device
 from pynwb.ecephys import ElectricalSeries, LFP, ElectrodeGroup
 from pynwb.behavior import EyeTracking, SpatialSeries
 from nwb_conversion_tools.basedatainterface import BaseDataInterface

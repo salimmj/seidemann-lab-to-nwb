@@ -18,6 +18,7 @@ if stub_test:
 
 session_id = data_path.stem
 
+
 source_data = dict()
 conversion_options = dict()
 
@@ -27,12 +28,12 @@ dtype = "uint16"
 file_path = data_path / "stream" / "Image_001_001.raw"
 imaging_parameters = dict(
     file_path=str(file_path),
-    rows=rows,
-    columns=columns,
+    num_rows=rows,
+    num_columns=columns,
     num_channels=num_channels,
     rows_axis=rows_axis,
     columns_axis=columns_axis,
-    num_channels_axis=num_channels_axis,
+    channels_axis=num_channels_axis,
     frame_axis=frame_axis,
     sampling_frequency=sampling_frequency,
     dtype=dtype,
