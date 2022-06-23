@@ -1,33 +1,63 @@
-# Using this template
+# seidemann-lab-to-nwb
+NWB conversion scripts for Seidemann lab data to the [neuro data without borders](https://www.nwb.org/) data format.
 
-This repo serves as a generic template for all conversion projects undertaken by the CatalystNeuro team. You can easily use this by...
-
-Creating a new project under the CatalystNeuro umbrella (or fork this repo and use it for your personal repos)...
-
-![image](https://user-images.githubusercontent.com/51133164/167436507-8b30ca9d-588c-4941-8385-bdff050f6558.png)
-
-
-Select this template at the top...
-
-![image](https://user-images.githubusercontent.com/51133164/167436692-670480f1-216d-4cac-a1b3-76ad518ec2f6.png)
-
-
-
-# Setting up pre-commit bot
-
-For new repos, an extra step of allowing the black auto-commit CI bot may have to be enabled at: https://results.pre-commit.ci/
-
-
-
-# Dataset-specific environments
-
-If the conversion involves multiple very different datasets collected over several years it is recommended to have separate environments for each dataset to reconcile dependency conflicts, instead of attempting to either keep old conversions up to date with recent upstream changes or using strong version pinning at the outer level `my-lab-to-nwb` requirements.
-
-These environments can be easily made by simply calling
+## Clone and dev install
+To run the following repo you need to have installed both git and pip then do the following.
 
 ```
-conda create name_of_environment_file.yml
-conda activate name-of-environment
+$ git clone https://github.com/catalystneuro/seidemann-lab-to-nwb
+$ pip install -e .
 ```
 
-Of course, if the conversion is sufficiently simple feel free to keep dependencies at the outermost level
+Alternatively, to clone the repository and set up a conda environment, do:
+```
+$ git clone https://github.com/catalystneuro/seidemann-lab-to-nwb
+$ cd nwb-conversion-tools
+$ conda env create --file make_env.yml
+$ conda activate seidemann-lab-to-nwb-env
+```
+
+## Repository structure
+Each conversion is organized in a directory of its own in the `src` directory:
+
+    seidemann-lab-to-nwb/
+    ├── LICENSE
+    ├── make_env.yml
+    ├── pyproject.toml
+    ├── README.md
+    ├── requirements.txt
+    ├── setup.py
+    └── src
+        ├── seidemann_lab_to_nwb
+        │   ├── conversion_directory_1
+        │   └── embargo20a`
+        │       ├── embargo20abehaviorinterface.py
+        │       ├── embargo20a_convert_script.py
+        │       ├── embargo20a_metadata.yml
+        │       ├── embargo20anwbconverter.py
+        │       ├── embargo20a_requirements.txt
+        │       └── __init__.py
+        │   ├── conversion_directory_b
+
+        └── __init__.py
+
+ For example, for the conversion `embargo20a` you can find a directory located in `src/seidemann-lab-to-nwb/embargo20a`. Inside each conversion directory you can find the following files:
+
+* `embargo20a_convert_script.py`: this is the cemtral script that you must run in order to perform the full conversion.
+* `embargo20a_requirements.txt`: dependencies specific to this conversion specifically.
+* `embargo20a_metadata.yml`: metadata in yaml format for this specific conversion.
+* `embargo20abehaviorinterface.py`: the behavior interface. Usually ad-hoc for each conversion.
+* `embargo20anwbconverter.py`: The place where the `NWBConverter` class is defined.
+
+The directory might contain other files that are necessary for the conversion but those are the central ones.
+
+## Running a specific conversion
+To run a specific conversion, you might need to install first some conversion specific dependencies that are located in each conversion directory:
+```
+pip install -r src/seidemann_lab_to_nwb/embargo20a/embargo20a_requirements.txt 
+```
+
+You can run a specific conversion with the following command:
+```
+python src/seidemann_lab_to_nwb/embargo20a/embargo20a_conversion_script.py
+```
