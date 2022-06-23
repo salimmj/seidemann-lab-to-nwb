@@ -44,10 +44,8 @@ Each conversion is organized in a directory of its own in the `src` directory:
         │       ├── embargo20anwbconverter.py
         │       ├── embargo20a_requirements.txt
         │       ├── embargo20a_notes.md
-
         │       └── __init__.py
         │   ├── conversion_directory_b
-
         └── __init__.py
 
  For example, for the conversion `embargo20a` you can find a directory located in `src/seidemann-lab-to-nwb/embargo20a`. Inside each conversion directory you can find the following files:
