@@ -64,7 +64,7 @@ The directory might contain other files that are necessary for the conversion bu
 ## Running a specific conversion
 To run a specific conversion, you might need to install first some conversion specific dependencies that are located in each conversion directory:
 ```
-pip install -r src/seidemann_lab_to_nwb/embargo20a/embargo20a_requirements.txt 
+pip install -r src/seidemann_lab_to_nwb/embargo20a/embargo20a_requirements.txt
 ```
 
 You can run a specific conversion with the following command:
