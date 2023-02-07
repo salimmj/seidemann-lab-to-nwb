@@ -28,7 +28,6 @@ class Embargo22ANWBConverter(NWBConverter):
         self.add_time_stamps_to_imaging_extractor()
 
     def add_time_stamps_to_imaging_extractor(self):
-
         # Get the smallest timestamp
         file_path_events = self.session_path / "events.csv"
         smallest_timestamp = pd.read_csv(file_path_events).Timestamp.min()

@@ -35,7 +35,6 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         return empty_metadata
 
     def run_conversion(self, nwbfile: NWBFile, metadata: dict):
-
         file_path = self.session_path / "M22D20210127R0Data2P20201001.mat"
         data_simple = read_mat(str(file_path), variable_names=["TS"], ignore_fields=["nTrial", "FileName", "Sync"])
         trial_structure = data_simple["TS"]
@@ -135,7 +134,6 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
         # nwbfile.add_acquisition(ekg_time_series)
 
     def add_trials(self, nwbfile, trial_structure):
-
         # Mappings
         header = trial_structure["Header"]
         definitions = header["DEF"]
@@ -229,7 +227,6 @@ class Embargo22ABehaviorInterface(BaseDataInterface):
             nwbfile.add_trial_column(name=column, data=data, description=description)
 
     def add_events(self, nwbfile, trial_structure):
-
         # Mappings
         header = trial_structure["Header"]
         definitions = header["DEF"]
