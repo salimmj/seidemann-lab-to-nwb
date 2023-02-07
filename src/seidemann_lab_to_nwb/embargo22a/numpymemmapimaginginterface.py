@@ -25,7 +25,6 @@ class NumpyMemmapImagingInterface(BaseImagingExtractorInterface):
         channels_axis: int,
         offset: int = 0,
     ):
-
         video_structure = VideoStructure(
             num_rows=num_rows,
             num_columns=num_columns,
