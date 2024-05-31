@@ -3,7 +3,7 @@ from pathlib import Path
 from datetime import datetime
 from dateutil import tz
 
-from nwb_conversion_tools.utils import load_dict_from_file, dict_deep_update
+from neuroconv.utils import load_dict_from_file, dict_deep_update
 
 from seidemann_lab_to_nwb.embargo22a import Embargo22ANWBConverter
 from conversion_parameters import rows, columns, num_channels, rows_axis, columns_axis, num_channels_axis, frame_axis

@@ -9,10 +9,10 @@ from pymatreader import read_mat
 from pynwb import NWBFile, TimeSeries
 from pynwb.ecephys import ElectricalSeries, LFP, ElectrodeGroup
 from pynwb.behavior import EyeTracking, SpatialSeries
-from nwb_conversion_tools.basedatainterface import BaseDataInterface
-from nwb_conversion_tools.utils.types import FolderPathType
+from neuroconv.basedatainterface import BaseDataInterface
+from neuroconv.utils.types import FolderPathType
 from ndx_events import LabeledEvents
-from nwb_conversion_tools.tools.nwb_helpers import get_module
+from neuroconv.tools.nwb_helpers import get_module
 from hdmf.backends.hdf5.h5_utils import H5DataIO
 
 

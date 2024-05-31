@@ -2,8 +2,8 @@ from pydantic import FilePath
 from roiextractors import NumpyMemmapImagingExtractor
 from roiextractors.extraction_tools import VideoStructure
 
-from nwb_conversion_tools.datainterfaces.ophys.baseimagingextractorinterface import BaseImagingExtractorInterface
-from nwb_conversion_tools.utils.types import FilePathType
+from neuroconv.datainterfaces.ophys.baseimagingextractorinterface import BaseImagingExtractorInterface
+from neuroconv.utils import FilePathType
 
 
 class NumpyMemmapImagingInterface(BaseImagingExtractorInterface):

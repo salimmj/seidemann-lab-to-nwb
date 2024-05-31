@@ -7,7 +7,8 @@ import numpy as np
 import pandas as pd
 from pymatreader import read_mat
 
-from nwb_conversion_tools import NWBConverter, Suite2pSegmentationInterface
+from neuroconv import NWBConverter
+from neuroconv.datainterfaces import Suite2pSegmentationInterface
 
 from seidemann_lab_to_nwb.embargo22a import Embargo22ABehaviorInterface
 from numpymemmapimaginginterface import NumpyMemmapImagingInterface
